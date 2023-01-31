@@ -54,7 +54,7 @@ let controls = null
 /**
  * Model
  */
-gltfLoader.load ('TechStack2-BAKING-.glb',
+gltfLoader.load ('MTM-fleet3-FULL WHITE-BAKING-joined.glb',
     (gltf) => {
         gltf.scene.traverse((child) => {
             child.material = bakedMaterial
@@ -67,13 +67,11 @@ gltfLoader.load ('TechStack2-BAKING-.glb',
         console.log(gltf)
 
         mixer = new THREE.AnimationMixer(gltf.scene)
-        const csr = mixer.clipAction(gltf.animations[0])   // this is the animation clip from Blender from the animations tab there's an array [ ] of animations. 
-        const desktop = mixer.clipAction(gltf.animations[1])
-        const phone = mixer.clipAction(gltf.animations[2])
+        const iphone = mixer.clipAction(gltf.animations[0])   // this is the animation clip from Blender from the animations tab there's an array [ ] of animations. 
+       
 
-        csr.play()
-        desktop.play()
-        phone.play()
+        iphone.play()
+    
 
     
     }
@@ -129,7 +127,7 @@ window.addEventListener('resize', () =>
 const camera = new THREE.PerspectiveCamera(26, 1.5, 0.1, 100)
 
 
-camera.position.set(2,0,0)
+camera.position.set(0,0,0)
 
 
 scene.add(camera)
@@ -142,12 +140,12 @@ controls.target.set(3,0.1,0.6);  // when using orbit controls, this CONTROSLS TH
 controls.update();
  
 controls.screenSpacePanning = false
-controls.minAzimuthAngle = 1.56 // **** IMPORTANT this controls the rotation of the camera on horizontal axis when both min and max are the same, there's no movement possible. 
+controls.minAzimuthAngle = 0 // **** IMPORTANT this controls the rotation of the camera on horizontal axis when both min and max are the same, there's no movement possible. 
 controls.maxAzimuthAngle = 1.56  
 // controls.maxAzimuthAngle = Math.PI / 2
 
-controls.maxPolarAngle = Math.PI / 2.45
-controls.minPolarAngle = Math.PI / 2.55
+// controls.maxPolarAngle = Math.PI / 2.45
+// controls.minPolarAngle = Math.PI / 2.55
 
 controls.maxDistance = 3
 controls.minDistance = 1
