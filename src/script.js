@@ -1,4 +1,4 @@
-import './style.css'
+// import './style.css'
 import * as dat from 'lil-gui'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
@@ -6,23 +6,32 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { CubeCamera, MixOperation } from 'three'
 
+/**
+ * Base
+ */
 
+// Debug
+const gui = new dat.GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 
-// const canvasWidth = document.getElementById('canvas2').clientWidth
-// const canvasHeight = document.getElementById('canvas2').clientHeight
+// Scene
+const scene = new THREE.Scene()
 
 const canvasWidth = 600 
 const canvasHeight = 400
 
+/**
+ * Test sphere
+ */
+ const testSphere = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 32, 32),
+    new THREE.MeshBasicMaterial()
+)
+scene.add(testSphere)
 
-
-
-
-const scene = new THREE.Scene()
-
+// animation time
 let previousTime = 0
 
 /**
@@ -97,10 +106,6 @@ gltfLoader.load ('MTM-fleet3-FULL WHITE-BAKING-joined.glb',
         vanMini3.play()
             
         CameraAction.play() // this is the camera animation clip from Blender 
-            
-    
-
-    
     }
 )
 
@@ -108,56 +113,34 @@ gltfLoader.load ('MTM-fleet3-FULL WHITE-BAKING-joined.glb',
  * Sizes
  */
 
-
 const sizes = {
-    // width: window.innerWidth,
-    // height: window.innerHeight
-    width: canvasWidth ,
-    height: canvasHeight
+    width: window.innerWidth,
+    height: window.innerHeight
+    // width: canvasWidth ,
+    // height: canvasHeight
 }
-// window.addEventListener('resize', () =>
-// {
-//     // Update sizes
-//     sizes.width = window.innerWidth
-//     sizes.height = window.innerHeight
-
-//     // Update camera
-//     camera.aspect = sizes.width / sizes.height
-//     camera.updateProjectionMatrix()
-
-//     // Update renderer
-//     renderer.setSize(sizes.width, sizes.height)
-// })
-
-
 window.addEventListener('resize', () =>
 {
-    // // Update sizes
-    // sizes.width = 600
-    // sizes.height = 600
-    // // Update camera
-    // camera.aspect = sizes.width / sizes.height
-    // camera.updateProjectionMatrix()
+    // Update sizes
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+
+    // Update camera
+    camera.aspect = sizes.width / sizes.height
+    camera.updateProjectionMatrix()
 
     // Update renderer
-    // renderer.setSize(sizes.width, sizes.height)
-    renderer.setSize(600    , 400)
-
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
-
-
 
 /**
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(26, 1.5, 0.1, 100)
-
-
+const camera = new THREE.PerspectiveCamera(26, sizes.width / sizes.height, 0.1,  100)
 camera.position.set(5,2,5)
 camera.lookAt(0,0,0)
-
-
 scene.add(camera)
 
 // Controls
@@ -195,7 +178,7 @@ const renderer = new THREE.WebGLRenderer({
 })
 
 scene.background = new THREE.Color(0xffffff)
-renderer.setSize(600, 400)
+renderer.setSize(sizes.width, sizes.height)
 // if (sizes.width <= 800) {
 //     renderer.setSize(sizes.width * 0.5, sizes.height*0.5)
 // }
@@ -213,12 +196,8 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - previousTime
     previousTime = elapsedTime
-
-    // Update controls
     
     // controls.update()   // this is for orbit controls
-
-   
 
     if (mixer !== null){
         mixer.update(deltaTime)
