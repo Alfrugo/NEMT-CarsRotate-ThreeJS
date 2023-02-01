@@ -46,7 +46,7 @@ let controls = null
 /**
  * Material
  */
- const bakedTexture = textureLoader.load('BakedNEMT.jpg')
+ const bakedTexture = textureLoader.load('baked.jpg')
  bakedTexture.flipY = false
 
  const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
@@ -60,7 +60,7 @@ gltfLoader.load ('MTM-fleet3-FULL WHITE-BAKING-joined.glb',
             child.material = bakedMaterial
             })
         gltf.scene.position.setX(0)  // this is offsetting the imported scene from Blender to avoid moving keyframes
-        gltf.scene.position.setY(-0.8)
+        gltf.scene.position.setY(0)
         gltf.scene.position.setZ(0)
 
         scene.add(gltf.scene)
@@ -68,9 +68,36 @@ gltfLoader.load ('MTM-fleet3-FULL WHITE-BAKING-joined.glb',
 
         mixer = new THREE.AnimationMixer(gltf.scene)
         const iphone = mixer.clipAction(gltf.animations[0])   // this is the animation clip from Blender from the animations tab there's an array [ ] of animations. 
+        const cabYellow = mixer.clipAction(gltf.animations[1])
+        const greenRing = mixer.clipAction(gltf.animations[2])
+        const purpleBase = mixer.clipAction(gltf.animations[3])
+        const sedanWhite1 = mixer.clipAction(gltf.animations[4])
+        const sedanWhite2 = mixer.clipAction(gltf.animations[5])
+        const vanBig = mixer.clipAction(gltf.animations[6])
+        const vanBlack = mixer.clipAction(gltf.animations[7])
+        const vanMini1 = mixer.clipAction(gltf.animations[8])
+        const vanMini2 = mixer.clipAction(gltf.animations[9])
+        const vanMini3 = mixer.clipAction(gltf.animations[10])
        
+        const CameraAction = mixer.clipAction(gltf.animations[11])   // this this the camera animation clip from Blender
+
+
 
         iphone.play()
+        cabYellow.play()
+        greenRing.play()
+        purpleBase.play()
+        sedanWhite1.play()
+        sedanWhite2.play()
+        vanBig.play()
+        vanBlack.play()
+            
+        vanMini1.play()
+        vanMini2.play()
+        vanMini3.play()
+            
+        CameraAction.play() // this is the camera animation clip from Blender 
+            
     
 
     
