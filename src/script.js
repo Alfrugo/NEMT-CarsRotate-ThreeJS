@@ -106,6 +106,8 @@ gltfLoader.load ('MTM-fleet3-FULL-WHITE-BAKING-joined-materials.glb',
         gltf.scene.position.setY(0)
         gltf.scene.position.setZ(0)
 
+        gltf.scene.scale.set(1.1, 1.1, 1.1)
+
         scene.add(gltf.scene)
         updateAllMaterials()
         // console.log(gltf)
