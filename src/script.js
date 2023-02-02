@@ -58,7 +58,7 @@ scene.add(testPlane)
 
 testPlane.rotation.x = - Math.PI * 0.5
 testPlane.scale.set(10, 10, 10)
-testPlane.position.y = 0.00
+testPlane.position.y = 0.017
 
 /**
  * Lights
