@@ -11,7 +11,9 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
  */
 
 // Debug
+// Debug
 const gui = new dat.GUI()
+const debugObject = {}
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -19,6 +21,24 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
+
+/**
+ * Update all materials
+ */
+const updateAllMaterials = () =>
+{
+    scene.traverse((child) =>
+    {
+        if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial)
+        {
+            // child.material.envMap = environmentMap
+            child.material.envMapIntensity = debugObject.envMapIntensity
+            child.castShadow = true
+            child.receiveShadow = true
+            console.log(child)
+        }
+    })
+}
 
 /**
  * Test sphere
@@ -29,12 +49,32 @@ const scene = new THREE.Scene()
 // )
 // scene.add(testSphere)
 
+
+const testPlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1, 32, 32),
+    new THREE.MeshStandardMaterial()
+)
+scene.add(testPlane)
+
+testPlane.rotation.x = - Math.PI * 0.5
+testPlane.scale.set(10, 10, 10)
+testPlane.position.y = 0.00
+
 /**
  * Lights
  */
-const directionalLight = new THREE.DirectionalLight('#ffffff', 1)
-directionalLight.position.set(0.25, 3, -2.25)
+const directionalLight = new THREE.DirectionalLight('#ffffff', 4.1)
+directionalLight.castShadow = true
+
+directionalLight.position.set(0.25, 2.419, 2.296)
+directionalLight.shadow.camera.far = 5
+directionalLight.shadow.mapSize.set(1024, 1024)
+directionalLight.shadow.normalBias = 0.05
 scene.add(directionalLight)
+
+// this shows the light cone in the scene
+const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera)
+scene.add(directionalLightCameraHelper)
 
 gui.add(directionalLight, 'intensity').min(0).max(10).step(0.001).name('lightIntensity')
 gui.add(directionalLight.position, 'x').min(-5).max(5).step(0.001).name('lightX')
@@ -65,33 +105,19 @@ gltfLoader.setDRACOLoader(dracoLoader) // this is the loader for the compressed 
 let mixer = null
 let controls = null
 
-/**
- * Material
- */
- const bakedTexture = textureLoader.load('baked.jpg')
- bakedTexture.flipY = false
-
-//  const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
-//  const standardMaterial = new THREE.MeshStandardMaterial({ color: '#ffffff' })
- 
 
 /**
  * Model
  */
 gltfLoader.load ('MTM-fleet3-FULL-WHITE-BAKING-joined-materials.glb',
     (gltf) => {
-        gltf.scene.traverse((child) => {
-            if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-            // child.material = bakedMaterial
-            console.log(child)
-            }
-            })
         gltf.scene.position.setX(0)  // this is offsetting the imported scene from Blender to avoid moving keyframes
         gltf.scene.position.setY(0)
         gltf.scene.position.setZ(0)
 
         scene.add(gltf.scene)
-        console.log(gltf)
+        updateAllMaterials()
+        // console.log(gltf)
 
         mixer = new THREE.AnimationMixer(gltf.scene)
 
@@ -181,8 +207,8 @@ scene.add(camera)
 // controls.minDistance = 1
 
 
-var gridXZ = new THREE.GridHelper(10, 1);
-    scene.add(gridXZ);
+// var gridXZ = new THREE.GridHelper(10, 1);
+//     scene.add(gridXZ);
 
 /**
  * Renderer
@@ -190,16 +216,25 @@ var gridXZ = new THREE.GridHelper(10, 1);
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: true
-})
+    })
 
 scene.background = new THREE.Color(0xffffff)
 renderer.setSize(sizes.width, sizes.height)
 renderer.physicallyCorrectLights = true  // this is for the lights to be more realistic
-// if (sizes.width <= 800) {
-//     renderer.setSize(sizes.width * 0.5, sizes.height*0.5)
-// }
-// else {renderer.setSize(sizes.width, sizes.height)}
-// // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+renderer.outputEncoding = THREE.sRGBEncoding  // important to make color look right
+renderer.shadowMap.enabled = true
+renderer.shadowMap.type = THREE.PCFSoftShadowMap
+
+gui
+    .add(renderer, 'toneMapping', {
+        No: THREE.NoToneMapping,
+        Linear: THREE.LinearToneMapping,
+        Reinhard: THREE.ReinhardToneMapping,
+        Cineon: THREE.CineonToneMapping,
+        ACESFilmic: THREE.ACESFilmicToneMapping
+    })
+gui.add(renderer, 'toneMappingExposure').min(0).max(10).step(0.001)
+
 
 /**
  * Animate
