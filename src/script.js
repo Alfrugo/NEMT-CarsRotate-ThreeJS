@@ -11,8 +11,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
  */
 
 // Debug
-// Debug
-const gui = new dat.GUI()
+// const gui = new dat.GUI()
 const debugObject = {}
 
 // Canvas
@@ -41,15 +40,8 @@ const updateAllMaterials = () =>
 }
 
 /**
- * Test sphere
+ * White scene floor model 
  */
-//  const testSphere = new THREE.Mesh(
-//     new THREE.SphereGeometry(1, 32, 32),
-//     new THREE.MeshStandardMaterial()
-// )
-// scene.add(testSphere)
-
-
 const testPlane = new THREE.Mesh(
     new THREE.PlaneGeometry(1, 1, 32, 32),
     new THREE.MeshStandardMaterial()
@@ -63,25 +55,26 @@ testPlane.position.y = 0.017
 /**
  * Lights
  */
-const directionalLight = new THREE.DirectionalLight('#ffffff', 4.1)
+const directionalLight = new THREE.DirectionalLight('#ffffff', 4.05)
 directionalLight.castShadow = true
 
-directionalLight.position.set(0.25, 2.419, 2.296)
-directionalLight.shadow.camera.far = 5
+directionalLight.position.set(-1.564, 2.419, 2.296)
+directionalLight.shadow.camera.far = 10
 directionalLight.shadow.mapSize.set(1024, 1024)
-directionalLight.shadow.normalBias = 0.05
+// directionalLight.shadow.normalBias = 0.05
+// directionalLight.shadow.radius = 10
+
 scene.add(directionalLight)
 
 // this shows the light cone in the scene
-const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera)
-scene.add(directionalLightCameraHelper)
+// const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera)
+// scene.add(directionalLightCameraHelper)
 
-gui.add(directionalLight, 'intensity').min(0).max(10).step(0.001).name('lightIntensity')
-gui.add(directionalLight.position, 'x').min(-5).max(5).step(0.001).name('lightX')
-gui.add(directionalLight.position, 'y').min(-5).max(5).step(0.001).name('lightY')
-gui.add(directionalLight.position, 'z').min(-5).max(5).step(0.001).name('lightZ')
-
-
+// gui
+//     .add(directionalLight, 'intensity').min(0).max(10).step(0.001).name('lightIntensity')
+//     gui.add(directionalLight.position, 'x').min(-5).max(5).step(0.001).name('lightX')
+//     gui.add(directionalLight.position, 'y').min(-5).max(5).step(0.001).name('lightY')
+//     gui.add(directionalLight.position, 'z').min(-5).max(5).step(0.001).name('lightZ')
 
 
 // animation time
@@ -97,14 +90,12 @@ const textureLoader = new THREE.TextureLoader()
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('draco/')
 
-
 // GLTF loader
 const gltfLoader = new GLTFLoader()  // this is the loader for the glb file
 gltfLoader.setDRACOLoader(dracoLoader) // this is the loader for the compressed glb file
 
 let mixer = null
 let controls = null
-
 
 /**
  * Model
@@ -224,16 +215,19 @@ renderer.physicallyCorrectLights = true  // this is for the lights to be more re
 renderer.outputEncoding = THREE.sRGBEncoding  // important to make color look right
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
+renderer.toneMapping = THREE.LinearToneMapping
+renderer.toneMappingExposure = 1.302
 
-gui
-    .add(renderer, 'toneMapping', {
-        No: THREE.NoToneMapping,
-        Linear: THREE.LinearToneMapping,
-        Reinhard: THREE.ReinhardToneMapping,
-        Cineon: THREE.CineonToneMapping,
-        ACESFilmic: THREE.ACESFilmicToneMapping
-    })
-gui.add(renderer, 'toneMappingExposure').min(0).max(10).step(0.001)
+
+// gui
+//     .add(renderer, 'toneMapping', {
+//         No: THREE.NoToneMapping,
+//         Linear: THREE.LinearToneMapping,
+//         Reinhard: THREE.ReinhardToneMapping,
+//         Cineon: THREE.CineonToneMapping,
+//         ACESFilmic: THREE.ACESFilmicToneMapping
+//     })
+// gui.add(renderer, 'toneMappingExposure').min(0).max(10).step(0.001)
 
 
 /**
