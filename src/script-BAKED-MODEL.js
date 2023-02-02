@@ -23,11 +23,11 @@ const scene = new THREE.Scene()
 /**
  * Test sphere
  */
-//  const testSphere = new THREE.Mesh(
-//     new THREE.SphereGeometry(1, 32, 32),
-//     new THREE.MeshStandardMaterial()
-// )
-// scene.add(testSphere)
+ const testSphere = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 32, 32),
+    new THREE.MeshStandardMaterial()
+)
+scene.add(testSphere)
 
 /**
  * Lights
@@ -71,20 +71,16 @@ let controls = null
  const bakedTexture = textureLoader.load('baked.jpg')
  bakedTexture.flipY = false
 
-//  const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
-//  const standardMaterial = new THREE.MeshStandardMaterial({ color: '#ffffff' })
- 
+ const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
 
 /**
  * Model
  */
-gltfLoader.load ('MTM-fleet3-FULL-WHITE-BAKING-joined-materials.glb',
+gltfLoader.load ('MTM-fleet3-FULL WHITE-BAKING-joined.glb',
     (gltf) => {
         gltf.scene.traverse((child) => {
-            if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-            // child.material = bakedMaterial
+            child.material = bakedMaterial
             console.log(child)
-            }
             })
         gltf.scene.position.setX(0)  // this is offsetting the imported scene from Blender to avoid moving keyframes
         gltf.scene.position.setY(0)
