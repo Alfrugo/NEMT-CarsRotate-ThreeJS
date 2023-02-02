@@ -1,10 +1,10 @@
 // import './style.css'
 import * as dat from 'lil-gui'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
-import { CubeCamera, MixOperation } from 'three'
+// import { CubeCamera, MixOperation } from 'three'
 
 /**
  * Base
@@ -25,11 +25,26 @@ const canvasHeight = 400
 /**
  * Test sphere
  */
- const testSphere = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 32, 32),
-    new THREE.MeshBasicMaterial()
-)
-scene.add(testSphere)
+//  const testSphere = new THREE.Mesh(
+//     new THREE.SphereGeometry(1, 32, 32),
+//     new THREE.MeshStandardMaterial()
+// )
+// scene.add(testSphere)
+
+/**
+ * Lights
+ */
+const directionalLight = new THREE.DirectionalLight('#ffffff', 1)
+directionalLight.position.set(0.25, 3, -2.25)
+scene.add(directionalLight)
+
+gui.add(directionalLight, 'intensity').min(0).max(10).step(0.001).name('lightIntensity')
+gui.add(directionalLight.position, 'x').min(-5).max(5).step(0.001).name('lightX')
+gui.add(directionalLight.position, 'y').min(-5).max(5).step(0.001).name('lightY')
+gui.add(directionalLight.position, 'z').min(-5).max(5).step(0.001).name('lightZ')
+
+
+
 
 // animation time
 let previousTime = 0
@@ -67,6 +82,7 @@ gltfLoader.load ('MTM-fleet3-FULL WHITE-BAKING-joined.glb',
     (gltf) => {
         gltf.scene.traverse((child) => {
             child.material = bakedMaterial
+            console.log(child)
             })
         gltf.scene.position.setX(0)  // this is offsetting the imported scene from Blender to avoid moving keyframes
         gltf.scene.position.setY(0)
@@ -76,6 +92,7 @@ gltfLoader.load ('MTM-fleet3-FULL WHITE-BAKING-joined.glb',
         console.log(gltf)
 
         mixer = new THREE.AnimationMixer(gltf.scene)
+
         const iphone = mixer.clipAction(gltf.animations[0])   // this is the animation clip from Blender from the animations tab there's an array [ ] of animations. 
         const cabYellow = mixer.clipAction(gltf.animations[1])
         const greenRing = mixer.clipAction(gltf.animations[2])
@@ -87,10 +104,7 @@ gltfLoader.load ('MTM-fleet3-FULL WHITE-BAKING-joined.glb',
         const vanMini1 = mixer.clipAction(gltf.animations[8])
         const vanMini2 = mixer.clipAction(gltf.animations[9])
         const vanMini3 = mixer.clipAction(gltf.animations[10])
-       
         const CameraAction = mixer.clipAction(gltf.animations[11])   // this this the camera animation clip from Blender
-
-
 
         iphone.play()
         cabYellow.play()
@@ -100,7 +114,6 @@ gltfLoader.load ('MTM-fleet3-FULL WHITE-BAKING-joined.glb',
         sedanWhite2.play()
         vanBig.play()
         vanBlack.play()
-            
         vanMini1.play()
         vanMini2.play()
         vanMini3.play()
