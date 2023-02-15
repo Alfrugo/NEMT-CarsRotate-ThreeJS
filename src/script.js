@@ -1,10 +1,8 @@
-// import './style.css'
-import * as dat from 'lil-gui'
+import './style.css'
 import * as THREE from 'three'
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js' //***
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
-// import { CubeCamera, MixOperation } from 'three'
 
 /**
  * Base
@@ -19,7 +17,6 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
-
 
 /**
  * Update all materials
@@ -55,27 +52,14 @@ testPlane.position.y = 0.017
 /**
  * Lights
  */
-const directionalLight = new THREE.DirectionalLight('#ffffff', 4.05)
+const directionalLight = new THREE.DirectionalLight('#ffffff', 4.5)
 directionalLight.castShadow = true
 
 directionalLight.position.set(-1.564, 2.419, 2.296)
 directionalLight.shadow.camera.far = 10
 directionalLight.shadow.mapSize.set(1024, 1024)
-// directionalLight.shadow.normalBias = 0.05
-// directionalLight.shadow.radius = 10
 
 scene.add(directionalLight)
-
-// this shows the light cone in the scene
-// const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera)
-// scene.add(directionalLightCameraHelper)
-
-// gui
-//     .add(directionalLight, 'intensity').min(0).max(10).step(0.001).name('lightIntensity')
-//     gui.add(directionalLight.position, 'x').min(-5).max(5).step(0.001).name('lightX')
-//     gui.add(directionalLight.position, 'y').min(-5).max(5).step(0.001).name('lightY')
-//     gui.add(directionalLight.position, 'z').min(-5).max(5).step(0.001).name('lightZ')
-
 
 // animation time
 let previousTime = 0
@@ -125,7 +109,7 @@ gltfLoader.load ('MTM-fleet3-FULL-WHITE-BAKING-joined-materials.glb',
         const vanMini1 = mixer.clipAction(gltf.animations[8])
         const vanMini2 = mixer.clipAction(gltf.animations[9])
         const vanMini3 = mixer.clipAction(gltf.animations[10])
-        const CameraAction = mixer.clipAction(gltf.animations[11])   // this this the camera animation clip from Blender
+        const CameraAction = mixer.clipAction(gltf.animations[11])   // this is the camera animation clip from Blender
 
         iphone.play()
         cabYellow.play()
@@ -140,8 +124,29 @@ gltfLoader.load ('MTM-fleet3-FULL-WHITE-BAKING-joined-materials.glb',
         vanMini3.play()
             
         CameraAction.play() // this is the camera animation clip from Blender 
+
     }
 )
+
+
+// MOUSE TRACKING CAMERA 
+
+const mouse = new THREE.Vector2();
+const windowHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2 );
+
+
+function onMouseMove( event ) {
+
+	mouse.x = ( event.clientX - windowHalf.x );
+	mouse.y = ( event.clientY - windowHalf.x );
+  console.log (mouse)
+
+}
+
+document.addEventListener( 'mousemove', onMouseMove, false );
+
+
+
 
 /**
  * Sizes
@@ -174,34 +179,18 @@ window.addEventListener('resize', () =>
 // Base camera
 const camera = new THREE.PerspectiveCamera(26, sizes.width / sizes.height, 0.1,  100)
 camera.position.set(5,2,5)
-camera.lookAt(0,0,0)
+camera.lookAt(0,0,0) 
 scene.add(camera)
+
+
+
 
 // Controls
 
-// ORBIT CONTROLS!
-// controls = new OrbitControls(camera, canvas)
-// controls.enableDamping = true
+// // ORBIT CONTROLS!
+// controls = new OrbitControls(camera, canvas) //*** 
+// controls.maxDistance = 10
 
-// controls.target.set(3,0.1,0.6);  // when using orbit controls, this CONTROSLS THE POSITION OF THE CAMERA is is the position of the camera when the page loads
-// controls.update();
- 
-// controls.screenSpacePanning = false
-// controls.minAzimuthAngle = 0 // **** IMPORTANT this controls the rotation of the camera on horizontal axis when both min and max are the same, there's no movement possible. 
-// controls.maxAzimuthAngle = 1.56  
-
-
-// controls.maxAzimuthAngle = Math.PI / 2
-
-// controls.maxPolarAngle = Math.PI / 2.45
-// controls.minPolarAngle = Math.PI / 2.55
-
-// controls.maxDistance = 3
-// controls.minDistance = 1
-
-
-// var gridXZ = new THREE.GridHelper(10, 1);
-//     scene.add(gridXZ);
 
 /**
  * Renderer
@@ -220,18 +209,6 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.toneMapping = THREE.LinearToneMapping
 renderer.toneMappingExposure = 1.302
 
-
-// gui
-//     .add(renderer, 'toneMapping', {
-//         No: THREE.NoToneMapping,
-//         Linear: THREE.LinearToneMapping,
-//         Reinhard: THREE.ReinhardToneMapping,
-//         Cineon: THREE.CineonToneMapping,
-//         ACESFilmic: THREE.ACESFilmicToneMapping
-//     })
-// gui.add(renderer, 'toneMappingExposure').min(0).max(10).step(0.001)
-
-
 /**
  * Animate
  */
@@ -243,8 +220,13 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - previousTime
     previousTime = elapsedTime
+
+    camera.position.x = (mouse.x *-0.001) + 5
+    camera.position.y = (mouse.y *.001) + 2
+    // camera.position.z = (mouse.z *.001) + 5
+    camera.lookAt(0,0,0) 
     
-    // controls.update()   // this is for orbit controls
+    // controls.update()  // this is for orbit controls
 
     if (mixer !== null){
         mixer.update(deltaTime)
